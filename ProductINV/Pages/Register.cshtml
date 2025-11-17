@@ -1,0 +1,72 @@
+﻿@page
+@model ProductINV.Pages.RegisterModel
+
+<div class="register-container">
+    <h2>Create Your Account</h2>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+
+    <form method="post" asp-page-handler="CreateAccount">
+
+        <div class="mb-3">
+            <label class="form-label">ID Number (Auto-generated)</label>
+            <input asp-for="IdNumber" class="form-control" readonly />
+        </div>
+
+
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input asp-for="FullName" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input asp-for="Email" type="email" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input asp-for="Username" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input asp-for="Password" type="password" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Position</label>
+            <select asp-for="Position" class="form-control" required>
+                <option value="">-- Select Position --</option>
+                <option value="Missionary">Missionary</option>
+                <option value="Admin Finance">Admin Finance</option>
+                <option value="ICT Head">ICT Head</option>
+            </select>
+        </div>
+
+
+        <button class="btn btn-primary w-100 mt-3" type="submit">Create Account</button>
+    </form>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <script>
+        alert("@Model.SuccessMessage");
+        window.location.href = "/Login";
+    </script>
+}
+
+<style>
+    .register-container {
+        max-width: 450px;
+        margin: 40px auto;
+        padding: 25px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+</style>

@@ -1,0 +1,391 @@
+@page
+@model ProductINV.Pages.LoginModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - CWTP Asset Inventory System</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-brand">
+                <img src="~/cwtp_tr.png" alt="CWTP Logo" class="nav-logo" />
+                <div class="nav-text">
+                    <h1>CWTP Asset Inventory</h1>
+                    <p>Comprehensive Workforce Training Program</p>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="#" class="nav-link" data-modal="help-modal">Help Center</a>
+                <a href="#" class="nav-link">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Login Container -->
+    <div class="login-wrapper">
+        <div class="login-container">
+            <!-- Tab Switcher -->
+            <div class="tab-switcher">
+                <button type="button" class="tab-btn active" data-tab="user">
+                    👤 User Login
+                </button>
+                <button type="button" class="tab-btn" data-tab="admin">
+                    🔐 Admin Login
+                </button>
+            </div>
+
+            <!-- User Login Tab -->
+            <div id="user-login" class="tab-content">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>Welcome Back</h2>
+                        <p>Sign in to access your inventory dashboard</p>
+                    </div>
+
+                    <form id="user-login-form" method="post" asp-page-handler="UserLogin">
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email"
+                                   name="email"
+                                   class="form-control"
+                                   placeholder="Enter your email"
+                                   required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password"
+                                   name="password"
+                                   class="form-control"
+                                   placeholder="Enter your password"
+                                   required />
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            Sign In
+                        </button>
+
+                        <div class="form-footer">
+                            <div class="form-footer-links">
+                                <button type="button" class="btn-link" data-modal="forgot-password-modal">
+                                    Forgot Password?
+                                </button>
+                            </div>
+
+                            <div class="divider">or</div>
+
+                            <button type="button" class="btn-secondary" data-modal="create-account-modal" onclick="window.location.href='/Register'">
+    
+                                Create New Account
+                            </button>
+
+                            <div class="text-center mt-2">
+                                <button type="button" class="btn-link" data-modal="terms-modal">
+                                    Terms & Conditions
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Admin Login Tab -->
+            <div id="admin-login" class="tab-content hidden">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>Admin Access</h2>
+                        <p>Secure administrator login portal</p>
+                    </div>
+
+                    <form id="admin-login-form" method="post" asp-page-handler="AdminLogin">
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text"
+                                   name="username"
+                                   class="form-control"
+                                   placeholder="Enter admin username"
+                                   required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password"
+                                   name="password"
+                                   class="form-control"
+                                   placeholder="Enter admin password"
+                                   required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Admin Key</label>
+                            <input type="password"
+                                   name="adminKey"
+                                   class="form-control"
+                                   placeholder="Enter admin access key"
+                                   required />
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            Admin Sign In
+                        </button>
+
+                        <div class="form-footer">
+                            <div class="form-footer-links">
+                                <button type="button" class="btn-link" data-modal="forgot-password-modal">
+                                    Forgot Password?
+                                </button>
+                                <button type="button" class="btn-link" data-modal="create-admin-key-modal">
+                                    Create Admin Key
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Verification Modal -->
+    <div id="email-verification-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Email Verification</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center text-muted mb-2">
+                    We've sent a 6-digit verification code to your email address.
+                </p>
+                <form id="email-verification-form">
+                    <div class="form-group">
+                        <label class="form-label">Verification Code</label>
+                        <input type="text"
+                               id="verificationCode"
+                               name="verificationCode"
+                               class="form-control"
+                               placeholder="Enter 6-digit code"
+                               maxlength="6"
+                               required />
+                    </div>
+
+                    <div class="text-center mb-2">
+                        <button type="button" class="btn-link">Resend Code</button>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary modal-close">Cancel</button>
+                        <button type="submit" class="btn-primary">Verify Email</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ID Verification Modal -->
+    <div id="id-verification-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>ID Number Verification</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center text-muted mb-2">
+                    Please provide your ID number and email for verification.
+                </p>
+                <form id="id-verification-form">
+                    <div class="form-group">
+                        <label class="form-label">ID Number</label>
+                        <input type="text"
+                               name="idNumber"
+                               class="form-control"
+                               placeholder="Enter your ID number"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email"
+                               name="email"
+                               class="form-control"
+                               placeholder="Enter your email"
+                               required />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary modal-close">Cancel</button>
+                        <button type="submit" class="btn-primary">Verify ID</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgot-password-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Reset Password</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center text-muted mb-2">
+                    Enter your email address and we'll send you a password reset link.
+                </p>
+                <form id="forgot-password-form">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email"
+                               name="email"
+                               class="form-control"
+                               placeholder="Enter your email"
+                               required />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary modal-close">Cancel</button>
+                        <button type="submit" class="btn-primary">Send Reset Link</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Admin Key Modal -->
+    <div id="create-admin-key-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Create Admin Key</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center text-muted mb-2">
+                    Enter the master key to create a new admin access key.
+                </p>
+                <form id="create-admin-key-form">
+                    <div class="form-group">
+                        <label class="form-label">Master Key</label>
+                        <input type="password"
+                               name="masterKey"
+                               class="form-control"
+                               placeholder="Enter master key"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">New Admin Key</label>
+                        <input type="password"
+                               name="newAdminKey"
+                               class="form-control"
+                               placeholder="Create new admin key"
+                               required />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary modal-close">Cancel</button>
+                        <button type="submit" class="btn-primary">Create Key</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms and Conditions Modal -->
+    <div id="terms-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Terms and Conditions</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4>1. Acceptance of Terms</h4>
+                <p class="text-muted mb-2">
+                    By accessing and using the CWTP Asset Inventory System, you accept and agree to be bound by the terms and provision of this agreement.
+                </p>
+
+                <h4>2. Use License</h4>
+                <p class="text-muted mb-2">
+                    Permission is granted to temporarily access the system for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title.
+                </p>
+
+                <h4>3. User Obligations</h4>
+                <p class="text-muted mb-2">
+                    Users must maintain the confidentiality of their account credentials and are responsible for all activities that occur under their account.
+                </p>
+
+                <h4>4. Data Privacy</h4>
+                <p class="text-muted mb-2">
+                    We are committed to protecting your personal information. All data collected is used solely for system operations and will not be shared with third parties without consent.
+                </p>
+
+                <h4>5. System Usage</h4>
+                <p class="text-muted mb-2">
+                    The system must be used for legitimate inventory management purposes only. Any misuse or unauthorized access may result in account termination.
+                </p>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-primary modal-close">I Understand</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Center Modal -->
+    <div id="help-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Help Center</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4>🔐 Login Issues</h4>
+                <p class="text-muted mb-2">
+                    <strong>Forgot your password?</strong> Click on "Forgot Password" and follow the instructions to reset it.
+                </p>
+                <p class="text-muted mb-2">
+                    <strong>Can't receive verification code?</strong> Check your spam folder or click "Resend Code".
+                </p>
+
+                <h4>👤 Account Creation</h4>
+                <p class="text-muted mb-2">
+                    <strong>New user?</strong> Click "Create New Account" and fill in all required information. You'll need to verify your email address.
+                </p>
+
+                <h4>🔑 Admin Access</h4>
+                <p class="text-muted mb-2">
+                    <strong>Need admin access?</strong> Contact your system administrator to obtain an admin key.
+                </p>
+
+                <h4>📞 Contact Support</h4>
+                <p class="text-muted mb-2">
+                    <strong>Email:</strong> support@cwtp.com<br>
+                    <strong>Phone:</strong> +63 (02) 1234-5678<br>
+                    <strong>Office Hours:</strong> Monday - Friday, 8:00 AM - 5:00 PM
+                </p>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-primary modal-close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="~/js/login.js" asp-append-version="true"></script>
+</body>
+</html>
