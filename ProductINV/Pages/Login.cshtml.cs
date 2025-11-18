@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using ProductINV.Models;
+   // ✅ REQUIRED for AppDbContext
 using BCryptNet = BCrypt.Net.BCrypt;
 
 // ===============================================
-// ADMIN MODEL (added inside login page file)
+// ADMIN MODEL (kept exactly as you want it)
 // ===============================================
 namespace ProductINV.Models
 {
@@ -49,7 +50,6 @@ namespace ProductINV.Pages
         [BindProperty] public string MasterKey { get; set; } = "";
         [BindProperty] public string NewAdminKey { get; set; } = "";
 
-        // Display
         public string ErrorMessage { get; set; } = "";
         public string SuccessMessage { get; set; } = "";
 
@@ -60,9 +60,7 @@ namespace ProductINV.Pages
             var sessionUsername = HttpContext.Session.GetString("Username");
 
             if (!string.IsNullOrEmpty(sessionUsername))
-            {
                 return RedirectBasedOnRole(HttpContext.Session.GetString("UserRole"));
-            }
 
             return Page();
         }
@@ -74,7 +72,8 @@ namespace ProductINV.Pages
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
+                if (string.IsNullOrWhiteSpace(Email) ||
+                    string.IsNullOrWhiteSpace(Password))
                     return JsonError("Email/Username and password are required.");
 
                 var identifier = Email.Trim();
@@ -108,7 +107,7 @@ namespace ProductINV.Pages
         }
 
         // =====================================================
-        // ADMIN LOGIN (Supports BCrypt + Plain Password + Plain AdminKey)
+        // ADMIN LOGIN (BCrypt + Plain Password + Plain AdminKey)
         // =====================================================
         public async Task<IActionResult> OnPostAdminLogin()
         {
@@ -121,52 +120,31 @@ namespace ProductINV.Pages
                     return JsonError("All admin login fields are required.");
                 }
 
-                // =====================================================
-                // 1. GET ADMIN ACCOUNT
-                // =====================================================
                 var adminUser = await _context.Admins
                     .FirstOrDefaultAsync(a => a.Username == Username);
 
                 if (adminUser == null)
                     return JsonError("Admin account not found.");
 
-                // ------------------------------
-                // PASSWORD CHECK (BCrypt + Plain)
-                // ------------------------------
                 bool passwordMatch = false;
 
-                try
-                {
-                    passwordMatch = BCryptNet.Verify(Password, adminUser.PasswordHash);
-                }
-                catch
-                {
-                    passwordMatch = false; // bcrypt failed → ignore
-                }
+                try { passwordMatch = BCryptNet.Verify(Password, adminUser.PasswordHash); }
+                catch { passwordMatch = false; }
 
-                // Plain text fallback
                 if (!passwordMatch)
-                {
                     passwordMatch = (Password == adminUser.PasswordHash);
-                }
 
                 if (!passwordMatch)
                     return JsonError("Invalid admin username or password.");
 
-
-
-                // =====================================================
-                // 2. VERIFY ADMIN KEY (PLAIN TEXT COMPARISON)
-                // =====================================================
-                var dbKeyList = await _context.AdminKeys
+                var keyList = await _context.AdminKeys
                     .Where(k => k.is_active == true)
                     .ToListAsync();
 
                 bool keyMatch = false;
 
-                foreach (var key in dbKeyList)
+                foreach (var key in keyList)
                 {
-                    // 🔥 Since NOT BCRYPT → PLAIN TEXT COMPARE
                     if (AdminKey == key.key_hash)
                     {
                         keyMatch = true;
@@ -177,11 +155,6 @@ namespace ProductINV.Pages
                 if (!keyMatch)
                     return JsonError("Invalid admin key.");
 
-
-
-                // =====================================================
-                // 3. SUCCESS → SET SESSION
-                // =====================================================
                 HttpContext.Session.SetString("Username", adminUser.Username);
                 HttpContext.Session.SetString("UserRole", "Admin");
 
@@ -198,7 +171,7 @@ namespace ProductINV.Pages
         }
 
         // =====================================================
-        // VERIFY EMAIL OTP
+        // VERIFY OTP
         // =====================================================
         public async Task<IActionResult> OnPostVerifyEmail()
         {
@@ -253,8 +226,8 @@ namespace ProductINV.Pages
                 <body style='font-family: Arial;'>
                     <h2>CWTP Asset Inventory System</h2>
                     <p>Your verification code is:</p>
-                    <h1 style='font-size: 32px; letter-spacing: 5px;'>{otp}</h1>
-                    <p>This code will expire in 10 minutes.</p>
+                    <h1 style='font-size:32px;letter-spacing:5px;'>{otp}</h1>
+                    <p>This code expires in 10 minutes.</p>
                 </body>
                 </html>";
 
