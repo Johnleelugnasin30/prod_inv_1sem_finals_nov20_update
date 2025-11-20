@@ -1,0 +1,807 @@
+@page
+@model ProductINV.Pages.AdminDashboardModel
+@{
+    ViewData["Title"] = "Admin Dashboard - Asset Inventory System";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: linear-gradient(135deg, #8b1a1a 0%, #c44f4f 25%, #d4a851 50%, #2d7a5f 75%, #1a4d7a 100%);
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --text-primary: #1a1a2e;
+            --text-secondary: #6c757d;
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --bg-card: rgba(30, 37, 48, 0.95);
+            --text-primary: #ffffff;
+            --text-secondary: #b0b8c1;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        @@keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .floating-controls {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            gap: 0.75rem;
+            z-index: 9999;
+        }
+
+        .control-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            border: none;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .page-header {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #8b1a1a 0%, #c44f4f 100%);
+            color: white;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem;
+            border-radius: 8px;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2d7a5f 0%, #1a4d7a 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(45, 122, 79, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #B73E3E 0%, #c44f4f 100%);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2d7a5f 0%, #3aa076 100%);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: rgba(45, 122, 79, 0.1);
+            color: #2d7a5f;
+            border: 1px solid rgba(45, 122, 79, 0.3);
+        }
+
+        .alert-danger {
+            background: rgba(183, 62, 62, 0.1);
+            color: #B73E3E;
+            border: 1px solid rgba(183, 62, 62, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table th {
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .qr-display {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .qr-display img {
+            max-width: 300px;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Controls -->
+    <div class="floating-controls">
+        <button class="control-btn" id="themeToggle" title="Toggle Theme">
+            <span id="themeIcon">🌙</span>
+        </button>
+        <form method="post" asp-page-handler="Logout" style="display:inline;">
+            <button type="submit" class="control-btn" title="Logout">🚪</button>
+        </form>
+    </div>
+
+    <div class="main-container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1>🔐 Admin Dashboard</h1>
+            <p>Welcome, <strong>@Model.Username</strong></p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>@Model.TotalProducts</h3>
+                <p>Total Products</p>
+            </div>
+            <div class="stat-card">
+                <h3>@Model.TotalUsers</h3>
+                <p>Total Users</p>
+            </div>
+            <div class="stat-card">
+                <h3>@Model.TotalBorrowRequests</h3>
+                <p>Borrow Requests</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="dashboard">🏠 Dashboard</button>
+            <button class="tab-btn" data-tab="products">📦 Manage Products</button>
+            <button class="tab-btn" data-tab="users">👥 Manage Accounts</button>
+            <button class="tab-btn" data-tab="admins">🔐 Manage Admins</button>
+            <button class="tab-btn" data-tab="qr">📱 Generate QR</button>
+            <button class="tab-btn" data-tab="reports">📊 View Reports</button>
+            <button class="tab-btn" data-tab="borrow">📝 Borrow Requests</button>
+            <button class="tab-btn" data-tab="history">📜 Login History</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <div class="alert alert-success">@Model.SuccessMessage</div>
+        }
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+
+        <!-- DASHBOARD TAB -->
+        <div class="content-section active" id="dashboard">
+            <div class="card">
+                <h2>Dashboard Overview</h2>
+                <p>Welcome to your admin dashboard. Use the tabs above to navigate and manage the system.</p>
+                
+                <div class="stats-grid" style="margin-top: 2rem;">
+                    <div class="stat-card">
+                        <h3>@Model.TotalProducts</h3>
+                        <p>📦 Total Products</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>@Model.Products.Count(p => p.IsAvailable)</h3>
+                        <p>✅ Available Products</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>@Model.Products.Count(p => !p.IsAvailable)</h3>
+                        <p>🔒 Products In Use</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>@Model.TotalUsers</h3>
+                        <p>👥 Total Users</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>@Model.Users.Count(u => u.IsActive)</h3>
+                        <p>✓ Active Users</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>@Model.Admins.Count</h3>
+                        <p>🔐 Admin Accounts</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>@Model.TotalBorrowRequests</h3>
+                        <p>📝 Total Borrow Requests</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>@Model.BorrowRequests.Count(r => r.Status == "Pending")</h3>
+                        <p>⏳ Pending Requests</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>@Model.BorrowRequests.Count(r => r.Status == "Approved")</h3>
+                        <p>✅ Approved Requests</p>
+                    </div>
+                </div>
+
+                <h3 class="mt-4">Recent Activity</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                    <div class="card">
+                        <h4>📋 Recent Borrow Requests</h4>
+                        @if (Model.BorrowRequests.Any())
+                        {
+                            <table style="font-size: 0.9rem;">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var req in Model.BorrowRequests.Take(5))
+                                    {
+                                        <tr>
+                                            <td>@req.ProductName</td>
+                                            <td>
+                                                <span style="color: @(req.Status == "Approved" ? "#2d7a5f" : req.Status == "Pending" ? "#C9A961" : "#B73E3E");">
+                                                    @req.Status
+                                                </span>
+                                            </td>
+                                            <td>@req.RequestDate.ToString("MM/dd HH:mm")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p style="color: var(--text-secondary);">No borrow requests yet.</p>
+                        }
+                    </div>
+
+                    <div class="card">
+                        <h4>📜 Recent Login Activity</h4>
+                        @if (Model.LoginHistory.Any())
+                        {
+                            <table style="font-size: 0.9rem;">
+                                <thead>
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var log in Model.LoginHistory.Take(5))
+                                    {
+                                        <tr>
+                                            <td>@log.Action</td>
+                                            <td>@log.CreatedAt.ToString("MM/dd HH:mm")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p style="color: var(--text-secondary);">No login history available.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MANAGE PRODUCTS TAB -->
+        <div class="content-section" id="products">
+            <div class="card">
+                <h2>Manage Products</h2>
+                <h3 class="mt-3">Add New Product</h3>
+                <form method="post" asp-page-handler="CreateProduct">
+                    <input asp-for="NewProduct.Name" class="form-control" placeholder="Product Name" required />
+                    <input asp-for="NewProduct.ProductId" class="form-control" placeholder="Product ID" />
+                    <input asp-for="NewProduct.Category" class="form-control" placeholder="Category" />
+                    <input asp-for="NewProduct.Location" class="form-control" placeholder="Location" />
+                    <input asp-for="NewProduct.Price" type="number" step="0.01" class="form-control" placeholder="Price" />
+                    <input asp-for="NewProduct.Quantity" type="number" class="form-control" placeholder="Quantity" />
+                    <input asp-for="NewProduct.IsAvailable" type="checkbox" /> Available
+                    <button type="submit" class="btn-primary mt-2">Create Product</button>
+                </form>
+
+                <h3 class="mt-4">Product List</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Model.Products)
+                        {
+                            <tr>
+                                <td>@p.ProductId</td>
+                                <td>@p.Name</td>
+                                <td>@(p.Category ?? "N/A")</td>
+                                <td>@(p.Location ?? "N/A")</td>
+                                <td>@p.Price.ToString("C")</td>
+                                <td>@p.Quantity</td>
+                                <td>@(p.IsAvailable ? "Available" : "In Use")</td>
+                                <td>
+                                    <a href="?EditProductId=@p.Id" class="btn-primary" style="padding: 0.25rem 0.5rem; text-decoration: none; display: inline-block;">Edit</a>
+                                    <form method="post" asp-page-handler="DeleteProduct" style="display:inline;">
+                                        <input type="hidden" name="id" value="@p.Id" />
+                                        <button type="submit" class="btn-danger" style="padding: 0.25rem 0.5rem;">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                @if (Model.EditProductId.HasValue && Model.EditProduct != null)
+                {
+                    <div class="card mt-3">
+                        <h3>Edit Product</h3>
+                        <form method="post" asp-page-handler="UpdateProduct">
+                            <input type="hidden" asp-for="EditProduct.Id" />
+                            <input asp-for="EditProduct.Name" class="form-control" required />
+                            <input asp-for="EditProduct.ProductId" class="form-control" />
+                            <input asp-for="EditProduct.Category" class="form-control" />
+                            <input asp-for="EditProduct.Location" class="form-control" />
+                            <input asp-for="EditProduct.Price" type="number" step="0.01" class="form-control" />
+                            <input asp-for="EditProduct.Quantity" type="number" class="form-control" />
+                            <input asp-for="EditProduct.IsAvailable" type="checkbox" /> Available
+                            <button type="submit" class="btn-primary mt-2">Update Product</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- MANAGE ACCOUNTS TAB -->
+        <div class="content-section" id="users">
+            <div class="card">
+                <h2>Manage Accounts (CRUD)</h2>
+                <h3 class="mt-3">Add New User</h3>
+                <form method="post" asp-page-handler="CreateUser">
+                    <input asp-for="NewUser.FullName" class="form-control" placeholder="Full Name" required />
+                    <input asp-for="NewUser.Username" class="form-control" placeholder="Username" required />
+                    <input asp-for="NewUser.Email" type="email" class="form-control" placeholder="Email" required />
+                    <input asp-for="NewUser.PasswordHash" type="password" class="form-control" placeholder="Password" required />
+                    <input asp-for="NewUser.Position" class="form-control" placeholder="Position" />
+                    <select asp-for="NewUser.Role" class="form-select">
+                        <option value="User">User</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                    <button type="submit" class="btn-primary mt-2">Create User</button>
+                </form>
+
+                <h3 class="mt-4">User List</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Full Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var u in Model.Users)
+                        {
+                            <tr>
+                                <td>@u.Id</td>
+                                <td>@u.FullName</td>
+                                <td>@u.Username</td>
+                                <td>@u.Email</td>
+                                <td>@u.Role</td>
+                                <td>@(u.IsActive ? "Active" : "Inactive")</td>
+                                <td>
+                                    <a href="?EditUserId=@u.Id" class="btn-primary" style="padding: 0.25rem 0.5rem; text-decoration: none; display: inline-block;">Edit</a>
+                                    <form method="post" asp-page-handler="DeleteUser" style="display:inline;">
+                                        <input type="hidden" name="id" value="@u.Id" />
+                                        <button type="submit" class="btn-danger" style="padding: 0.25rem 0.5rem;">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                @if (Model.EditUserId.HasValue && Model.EditUser != null)
+                {
+                    <div class="card mt-3">
+                        <h3>Edit User</h3>
+                        <form method="post" asp-page-handler="UpdateUser">
+                            <input type="hidden" asp-for="EditUser.Id" />
+                            <input asp-for="EditUser.FullName" class="form-control" required />
+                            <input asp-for="EditUser.Username" class="form-control" required />
+                            <input asp-for="EditUser.Email" type="email" class="form-control" required />
+                            <input asp-for="EditUser.PasswordHash" type="password" class="form-control" placeholder="New Password (leave blank to keep current)" />
+                            <input asp-for="EditUser.Position" class="form-control" />
+                            <select asp-for="EditUser.Role" class="form-select">
+                                <option value="User">User</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                            <input asp-for="EditUser.IsActive" type="checkbox" /> Active
+                            <input asp-for="EditUser.IsEmailVerified" type="checkbox" /> Email Verified
+                            <button type="submit" class="btn-primary mt-2">Update User</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- MANAGE ADMINS TAB -->
+        <div class="content-section" id="admins">
+            <div class="card">
+                <h2>Manage Admin Accounts</h2>
+                <h3 class="mt-3">Create New Admin Account</h3>
+                <form method="post" asp-page-handler="CreateAdmin">
+                    <input asp-for="NewAdmin.Username" class="form-control" placeholder="Admin Username" required />
+                    <input type="password" asp-for="NewAdminPassword" class="form-control" placeholder="Password" required />
+                    <button type="submit" class="btn-primary mt-2">Create Admin Account</button>
+                </form>
+
+                <h3 class="mt-4">Admin Accounts List</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var admin in Model.Admins)
+                        {
+                            <tr>
+                                <td>@admin.Id</td>
+                                <td>@admin.Username</td>
+                                <td>
+                                    <a href="?EditAdminId=@admin.Id" class="btn-primary" style="padding: 0.25rem 0.5rem; text-decoration: none; display: inline-block;">Edit</a>
+                                    <form method="post" asp-page-handler="DeleteAdmin" style="display:inline;">
+                                        <input type="hidden" name="id" value="@admin.Id" />
+                                        <button type="submit" class="btn-danger" style="padding: 0.25rem 0.5rem;" onclick="return confirm('Are you sure you want to delete this admin account?');">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                @if (Model.EditAdminId.HasValue && Model.EditAdmin != null)
+                {
+                    <div class="card mt-3">
+                        <h3>Edit Admin Account</h3>
+                        <form method="post" asp-page-handler="UpdateAdmin">
+                            <input type="hidden" asp-for="EditAdmin.Id" />
+                            <input asp-for="EditAdmin.Username" class="form-control" required />
+                            <input type="password" asp-for="EditAdminPassword" class="form-control" placeholder="New Password (leave blank to keep current)" />
+                            <button type="submit" class="btn-primary mt-2">Update Admin Account</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- GENERATE QR TAB -->
+        <div class="content-section" id="qr">
+            <div class="card">
+                <h2>Generate QR Code</h2>
+                <form method="get" asp-page-handler="GenerateQR" class="mb-3">
+                    <input type="text" name="productId" class="form-control" placeholder="Enter Product ID..." value="@Model.QRProductId" />
+                    <button type="submit" class="btn-primary mt-2">Generate QR Code</button>
+                </form>
+
+                @if (!string.IsNullOrEmpty(Model.QRCodeUrl))
+                {
+                    <div class="qr-display">
+                        <h3>QR Code Generated</h3>
+                        <img src="@Model.QRCodeUrl" alt="QR Code" />
+                        <p class="mt-2"><strong>Product ID:</strong> @Model.QRProductId</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- VIEW REPORTS TAB -->
+        <div class="content-section" id="reports">
+            <div class="card">
+                <h2>View Reports</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>@Model.TotalProducts</h3>
+                        <p>Total Products</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>@Model.TotalUsers</h3>
+                        <p>Total Users</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>@Model.TotalBorrowRequests</h3>
+                        <p>Borrow Requests</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>@Model.Products.Count(p => p.IsAvailable)</h3>
+                        <p>Available Products</p>
+                    </div>
+                </div>
+
+                <h3 class="mt-4">Recent Borrow Requests</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Product</th>
+                            <th>Purpose</th>
+                            <th>Request Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var req in Model.BorrowRequests.Take(10))
+                        {
+                            <tr>
+                                <td>@req.ProductName</td>
+                                <td>@req.ProductName</td>
+                                <td>@req.Purpose</td>
+                                <td>@req.RequestDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>@req.Status</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- BORROW REQUESTS TAB -->
+        <div class="content-section" id="borrow">
+            <div class="card">
+                <h2>Borrow Requests</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Product</th>
+                            <th>Purpose</th>
+                            <th>Request Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var req in Model.BorrowRequests)
+                        {
+                            <tr>
+                                <td>@req.UserId</td>
+                                <td>@req.ProductName</td>
+                                <td>@req.Purpose</td>
+                                <td>@req.RequestDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>@req.Status</td>
+                                <td>
+                                    @if (req.Status == "Pending")
+                                    {
+                                        <form method="post" asp-page-handler="ApproveBorrowRequest" style="display:inline;">
+                                            <input type="hidden" name="id" value="@req.Id" />
+                                            <button type="submit" class="btn-success" style="padding: 0.25rem 0.5rem;">Approve</button>
+                                        </form>
+                                        <form method="post" asp-page-handler="RejectBorrowRequest" style="display:inline;">
+                                            <input type="hidden" name="id" value="@req.Id" />
+                                            <button type="submit" class="btn-danger" style="padding: 0.25rem 0.5rem;">Reject</button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- LOGIN HISTORY TAB -->
+        <div class="content-section" id="history">
+            <div class="card">
+                <h2>Login History</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Action</th>
+                            <th>IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model.LoginHistory)
+                        {
+                            <tr>
+                                <td>@log.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td>@log.Action</td>
+                                <td>@(log.IpAddress ?? "N/A")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const htmlElement = document.documentElement;
+
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        htmlElement.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            themeIcon.textContent = theme === 'dark' ? '🌞' : '🌙';
+        }
+
+        // Tab Switching
+        const tabs = document.querySelectorAll('.tab-btn');
+        const sections = document.querySelectorAll('.content-section');
+
+        tabs.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabs.forEach(x => x.classList.remove('active'));
+                sections.forEach(x => x.classList.remove('active'));
+
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
+

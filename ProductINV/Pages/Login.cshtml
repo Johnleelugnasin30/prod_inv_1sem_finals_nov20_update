@@ -1,0 +1,1466 @@
+@page
+@model ProductINV.Pages.LoginModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="autocomplete" content="off">
+    <title>Login - CWTP Asset Inventory System</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* CWTP Color Palette */
+        :root {
+            --cwtp-red: #B73E3E;
+            --cwtp-green: #2D7A4F;
+            --cwtp-gold: #C9A961;
+            --cwtp-blue: #1B4965;
+            --cwtp-light: #F8F9FA;
+            --cwtp-dark: #2C3E50;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Dynamic Animated Background */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, rgba(183, 62, 62, 0.7), rgba(45, 122, 79, 0.7), rgba(201, 169, 97, 0.7), rgba(27, 73, 101, 0.7), rgba(183, 62, 62, 0.7));
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @@keyframes gradientAnimation {
+            0%
+
+        {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+
+        }
+
+        .animated-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        .particle-1 {
+            width: 80px;
+            height: 80px;
+            background: var(--cwtp-red);
+            top: 20%;
+            left: 10%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .particle-2 {
+            width: 60px;
+            height: 60px;
+            background: var(--cwtp-green);
+            top: 60%;
+            right: 15%;
+            animation: float 8s ease-in-out infinite 1s;
+        }
+
+        .particle-3 {
+            width: 100px;
+            height: 100px;
+            background: var(--cwtp-gold);
+            bottom: 20%;
+            left: 20%;
+            animation: float 7s ease-in-out infinite 2s;
+        }
+
+        .particle-4 {
+            width: 70px;
+            height: 70px;
+            background: var(--cwtp-blue);
+            top: 40%;
+            right: 25%;
+            animation: float 9s ease-in-out infinite 0.5s;
+        }
+
+        @@keyframes float {
+            0%, 100%
+
+        {
+            transform: translateY(0) rotate(0deg);
+        }
+
+        50% {
+            transform: translateY(-30px) rotate(180deg);
+        }
+
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .nav-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .nav-text h1 {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--cwtp-red), var(--cwtp-green), var(--cwtp-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
+
+        .nav-text p {
+            font-size: 12px;
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: var(--cwtp-blue);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+            .nav-link:hover {
+                background: rgba(27, 73, 101, 0.1);
+                color: var(--cwtp-green);
+            }
+
+        /* Login Wrapper */
+        .login-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 480px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            animation: modalSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @@keyframes modalSlideIn {
+            from
+
+        {
+            opacity: 0;
+            transform: scale(0.9) translateY(40px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        }
+
+        /* 4-Petal Clover Logo */
+        .logo-container {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .clover-logo {
+            width: 90px;
+            height: 90px;
+            position: relative;
+            margin: 0 auto;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @@keyframes logoFloat {
+            0%, 100%
+
+        {
+            transform: translateY(0px) rotate(0deg);
+        }
+
+        50% {
+            transform: translateY(-12px) rotate(10deg);
+        }
+
+        }
+
+        /* 4 Clover Petals in Circle Formation */
+        .clover-petal {
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            animation: petalPulse 2.5s ease-in-out infinite;
+        }
+
+        @@keyframes petalPulse {
+            0%, 100%
+
+        {
+            transform: scale(1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        50% {
+            transform: scale(1.08);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        }
+
+        /* Top petal - Red */
+        .clover-petal-1 {
+            background: var(--cwtp-red);
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: 0s;
+        }
+
+        /* Right petal - Green */
+        .clover-petal-2 {
+            background: var(--cwtp-green);
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            animation-delay: 0.2s;
+        }
+
+        /* Bottom petal - Gold */
+        .clover-petal-3 {
+            background: var(--cwtp-gold);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: 0.4s;
+        }
+
+        /* Left petal - Blue */
+        .clover-petal-4 {
+            background: var(--cwtp-blue);
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            animation-delay: 0.6s;
+        }
+
+        /* Center circle */
+        .clover-center {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        /* Tab Switcher */
+        .tab-switcher {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.03);
+            padding: 6px;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #6c757d;
+        }
+
+            .tab-btn:hover {
+                background: rgba(0, 0, 0, 0.05);
+            }
+
+            .tab-btn.active {
+                background: linear-gradient(135deg, var(--cwtp-green), var(--cwtp-blue));
+                color: white;
+                box-shadow: 0 4px 15px rgba(45, 122, 79, 0.3);
+            }
+
+        /* Tab Content */
+        .tab-content {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+            .tab-content.hidden {
+                display: none;
+            }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* Form Styles */
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+            .form-header h2 {
+                font-size: 28px;
+                font-weight: 700;
+                background: linear-gradient(135deg, var(--cwtp-red), var(--cwtp-green), var(--cwtp-blue));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                margin-bottom: 8px;
+            }
+
+            .form-header p {
+                color: #6c757d;
+                font-size: 14px;
+            }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--cwtp-dark);
+            margin-bottom: 8px;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 13px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f8f9fa;
+            color: var(--cwtp-dark);
+            font-family: inherit;
+        }
+
+        .password-input-wrapper .form-control {
+            padding-right: 45px;
+        }
+
+        .form-control::placeholder {
+            color: #adb5bd;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--cwtp-green);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(45, 122, 79, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Password Toggle Eye Icon */
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+            .password-toggle:hover {
+                color: var(--cwtp-blue);
+                transform: translateY(-50%) scale(1.1);
+            }
+
+            .password-toggle svg {
+                width: 20px;
+                height: 20px;
+            }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, var(--cwtp-green) 0%, var(--cwtp-blue) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 25px rgba(45, 122, 79, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-primary::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+                transition: left 0.6s ease;
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 15px 35px rgba(45, 122, 79, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+            }
+
+                .btn-primary:hover::before {
+                    left: 100%;
+                }
+
+            .btn-primary:active {
+                transform: translateY(-1px);
+            }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 12px 24px;
+            background: white;
+            color: var(--cwtp-blue);
+            border: 2px solid var(--cwtp-blue);
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .btn-secondary:hover {
+                background: var(--cwtp-blue);
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(27, 73, 101, 0.3);
+            }
+
+        .btn-link {
+            background: none;
+            border: none;
+            color: var(--cwtp-blue);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+            .btn-link:hover {
+                color: var(--cwtp-green);
+                text-decoration: underline;
+            }
+
+        /* Form Footer */
+        .form-footer {
+            margin-top: 25px;
+        }
+
+        .form-footer-links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .divider {
+            text-align: center;
+            color: #adb5bd;
+            font-size: 13px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+            .divider::before,
+            .divider::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                width: 42%;
+                height: 1px;
+                background: #e1e8ed;
+            }
+
+            .divider::before {
+                left: 0;
+            }
+
+            .divider::after {
+                right: 0;
+            }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-2 {
+            margin-top: 15px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+            .modal-overlay.active {
+                display: flex;
+                animation: fadeIn 0.3s ease;
+            }
+
+        .modal-container {
+            background: white;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .modal-header h3 {
+                font-size: 22px;
+                font-weight: 700;
+                color: var(--cwtp-dark);
+                margin: 0;
+            }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #adb5bd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            line-height: 1;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+
+            .modal-close:hover {
+                color: var(--cwtp-red);
+                transform: rotate(90deg);
+            }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+            .modal-body h4 {
+                font-size: 16px;
+                font-weight: 700;
+                color: var(--cwtp-dark);
+                margin: 20px 0 10px;
+            }
+
+                .modal-body h4:first-child {
+                    margin-top: 0;
+                }
+
+        .text-muted {
+            color: #6c757d;
+            line-height: 1.6;
+        }
+
+        .mb-2 {
+            margin-bottom: 15px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+            .modal-footer button {
+                flex: 1;
+            }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .nav-text h1
+
+        {
+            font-size: 16px;
+        }
+
+        .nav-text p {
+            font-size: 10px;
+        }
+
+        .nav-logo {
+            width: 40px;
+            height: 40px;
+        }
+
+        .nav-links {
+            gap: 10px;
+        }
+
+        .nav-link {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+
+        .login-container {
+            padding: 30px 25px;
+        }
+
+        .form-header h2 {
+            font-size: 24px;
+        }
+
+        .clover-logo {
+            width: 80px;
+            height: 80px;
+        }
+
+        .clover-petal {
+            width: 40px;
+            height: 40px;
+        }
+
+        .tab-btn {
+            font-size: 13px;
+            padding: 10px 15px;
+        }
+
+        }
+
+        @@media (max-width: 480px) {
+            .navbar
+
+        {
+            padding: 10px 0;
+        }
+
+        .nav-brand {
+            gap: 10px;
+        }
+
+        .nav-links {
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .login-wrapper {
+            padding: 20px 15px;
+        }
+
+        .login-container {
+            padding: 25px 20px;
+            border-radius: 16px;
+        }
+
+        .clover-logo {
+            width: 70px;
+            height: 70px;
+        }
+
+        .clover-petal {
+            width: 35px;
+            height: 35px;
+        }
+
+        .form-header h2 {
+            font-size: 22px;
+        }
+
+        .form-control {
+            padding: 11px 14px;
+            font-size: 14px;
+        }
+
+        .password-input-wrapper .form-control {
+            padding-right: 40px;
+        }
+
+        .btn-primary {
+            padding: 12px 20px;
+            font-size: 15px;
+        }
+
+        .form-footer-links {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .modal-container {
+            margin: 15px;
+        }
+
+        .modal-header,
+        .modal-body {
+            padding: 20px;
+        }
+
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--cwtp-green), var(--cwtp-blue));
+            border-radius: 10px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: var(--cwtp-blue);
+            }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Animated Background -->
+    <div class="animated-background">
+        <div class="particle particle-1"></div>
+        <div class="particle particle-2"></div>
+        <div class="particle particle-3"></div>
+        <div class="particle particle-4"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-brand">
+                <img src="~/cwtp_tr.png" alt="CWTP Logo" class="nav-logo" />
+                <div class="nav-text">
+                    <h1>CWTP Asset Inventory</h1>
+                    <p>Comprehensive Workforce Training Program</p>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a class="nav-link" data-modal="help-modal">Help Center</a>
+                <a class="nav-link" data-modal="terms-modal">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Login Container -->
+    <div class="login-wrapper">
+        <div class="login-container">
+            <!-- 4-Petal Clover Logo -->
+            <div class="logo-container">
+                <div class="clover-logo">
+                    <div class="clover-petal clover-petal-1"></div>
+                    <div class="clover-petal clover-petal-2"></div>
+                    <div class="clover-petal clover-petal-3"></div>
+                    <div class="clover-petal clover-petal-4"></div>
+                    <div class="clover-center"></div>
+                </div>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="tab-switcher">
+                <button type="button" class="tab-btn active" data-tab="user">
+                    👤 User Login
+                </button>
+                <button type="button" class="tab-btn" data-tab="admin">
+                    🔐 Admin Login
+                </button>
+            </div>
+
+            <!-- User Login Tab -->
+            <div id="user-login" class="tab-content">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>Welcome Back</h2>
+                        <p>Sign in to access your inventory dashboard</p>
+                    </div>
+
+                    <form id="user-login-form" method="post" asp-page-handler="UserLogin" autocomplete="off">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email"
+                                   asp-for="Email"
+                                   class="form-control"
+                                   placeholder="Enter your email"
+                                   autocomplete="new-email"
+                                   autocorrect="off"
+                                   autocapitalize="off"
+                                   spellcheck="false"
+                                   required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <div class="password-input-wrapper">
+                                <input type="password"
+                                       asp-for="Password"
+                                       id="user-password"
+                                       class="form-control"
+                                       placeholder="Enter your password"
+                                       autocomplete="new-password"
+                                       autocorrect="off"
+                                       autocapitalize="off"
+                                       spellcheck="false"
+                                       required />
+                                <button type="button" class="password-toggle" data-target="user-password">
+                                    <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="eye-off-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            Sign In
+                        </button>
+
+                        <div class="form-footer">
+                            <div class="form-footer-links">
+                                <button type="button" class="btn-link" data-modal="forgot-password-modal">
+                                    Forgot Password?
+                                </button>
+                            </div>
+
+                            <div class="divider">or</div>
+
+                            <button type="button" class="btn-secondary" onclick="window.location.href='/Register'">
+                                Create New Account
+                            </button>
+
+                            <div class="text-center mt-2">
+                                <button type="button" class="btn-link" data-modal="terms-modal">
+                                    Terms & Conditions
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Admin Login Tab -->
+            <div id="admin-login" class="tab-content hidden">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>Admin Access</h2>
+                        <p>Secure administrator login portal</p>
+                    </div>
+
+                    <form id="admin-login-form" method="post" asp-page-handler="AdminLogin" autocomplete="off">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text"
+                                   asp-for="Username"
+                                   class="form-control"
+                                   placeholder="Enter admin username"
+                                   autocomplete="new-username"
+                                   autocorrect="off"
+                                   autocapitalize="off"
+                                   spellcheck="false"
+                                   required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <div class="password-input-wrapper">
+                                <input type="password"
+                                       asp-for="Password"
+                                       id="admin-password"
+                                       class="form-control"
+                                       placeholder="Enter admin password"
+                                       autocomplete="new-password"
+                                       autocorrect="off"
+                                       autocapitalize="off"
+                                       spellcheck="false"
+                                       required />
+                                <button type="button" class="password-toggle" data-target="admin-password">
+                                    <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="eye-off-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Admin Key</label>
+                            <div class="password-input-wrapper">
+                                <input type="password"
+                                       asp-for="AdminKey"
+                                       id="admin-key"
+                                       class="form-control"
+                                       placeholder="Enter admin access key"
+                                       autocomplete="new-adminkey"
+                                       autocorrect="off"
+                                       autocapitalize="off"
+                                       spellcheck="false"
+                                       required />
+                                <button type="button" class="password-toggle" data-target="admin-key">
+                                    <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <svg class="eye-off-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            Admin Sign In
+                        </button>
+
+                        <div class="form-footer">
+                            <div class="form-footer-links">
+                                <button type="button" class="btn-link" data-modal="forgot-password-modal">
+                                    Forgot Password?
+                                </button>
+                                <button type="button" class="btn-link" data-modal="create-admin-key-modal">
+                                    Create Admin Key
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Modals (keeping existing modal code) -->
+    <!-- Email Verification Modal -->
+    <div id="email-verification-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Email Verification</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center text-muted mb-2">
+                    We've sent a 6-digit verification code to your email address.
+                </p>
+                <form id="email-verification-form">
+                    <div class="form-group">
+                        <label class="form-label">Verification Code</label>
+                        <input type="text"
+                               id="verificationCode"
+                               name="verificationCode"
+                               class="form-control"
+                               placeholder="Enter 6-digit code"
+                               maxlength="6"
+                               required />
+                    </div>
+
+
+                    <div class="text-center mb-2">
+                        <button type="button" class="btn-link">Resend Code</button>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary modal-close">Cancel</button>
+                        <button type="submit" class="btn-primary">Verify Email</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ID Verification Modal -->
+    <div id="id-verification-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>ID Number Verification</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center text-muted mb-2">
+                    Please provide your ID number and email for verification.
+                </p>
+                <form id="id-verification-form">
+                    <div class="form-group">
+                        <label class="form-label">ID Number</label>
+                        <input type="text"
+                               name="idNumber"
+                               class="form-control"
+                               placeholder="Enter your ID number"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email"
+                               name="email"
+                               class="form-control"
+                               placeholder="Enter your email"
+                               required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary modal-close">Cancel</button>
+                        <button type="submit" class="btn-primary">Verify ID</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgot-password-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Reset Password</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center text-muted mb-2">
+                    Enter your email address and we'll send you a password reset link.
+                </p>
+                <form id="forgot-password-form" autocomplete="off">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email"
+                               name="email"
+                               class="form-control"
+                               placeholder="Enter your email"
+                               autocomplete="off"
+                               required />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary modal-close">Cancel</button>
+                        <button type="submit" class="btn-primary">Send Reset Link</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Admin Key Modal -->
+    <div id="create-admin-key-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Create Admin Key</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center text-muted mb-2">
+                    Enter the master key to create a new admin access key.
+                </p>
+                <form id="create-admin-key-form" method="post" asp-page-handler="CreateAdminKey" autocomplete="off">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label class="form-label">Master Key</label>
+                        <input type="password"
+                               name="MasterKey"
+                               id="masterKey"
+                               class="form-control"
+                               placeholder="Enter master key"
+                               autocomplete="off"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">New Admin Key</label>
+                        <input type="password"
+                               name="NewAdminKey"
+                               id="newAdminKey"
+                               class="form-control"
+                               placeholder="Create new admin key"
+                               autocomplete="off"
+                               required />
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary modal-close">Cancel</button>
+                        <button type="submit" class="btn-primary">Create Key</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms and Conditions Modal -->
+    <div id="terms-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Terms and Conditions</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4>1. Acceptance of Terms</h4>
+                <p class="text-muted mb-2">
+                    By accessing and using the CWTP Asset Inventory System, you accept and agree to be bound by the terms and provision of this agreement.
+                </p>
+
+                <h4>2. Use License</h4>
+                <p class="text-muted mb-2">
+                    Permission is granted to temporarily access the system for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title.
+                </p>
+
+                <h4>3. User Obligations</h4>
+                <p class="text-muted mb-2">
+                    Users must maintain the confidentiality of their account credentials and are responsible for all activities that occur under their account.
+                </p>
+
+                <h4>4. Data Privacy</h4>
+                <p class="text-muted mb-2">
+                    We are committed to protecting your personal information. All data collected is used solely for system operations and will not be shared with third parties without consent.
+                </p>
+
+                <h4>5. System Usage</h4>
+                <p class="text-muted mb-2">
+                    The system must be used for legitimate inventory management purposes only. Any misuse or unauthorized access may result in account termination.
+                </p>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-primary modal-close" style="width: 100%;">I Understand</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Center Modal -->
+    <div id="help-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Help Center</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4>🔐 Login Issues</h4>
+                <p class="text-muted mb-2">
+                    <strong>Forgot your password?</strong> Click on "Forgot Password" and follow the instructions to reset it.
+                </p>
+                <p class="text-muted mb-2">
+                    <strong>Can't receive verification code?</strong> Check your spam folder or click "Resend Code".
+                </p>
+
+                <h4>👤 Account Creation</h4>
+                <p class="text-muted mb-2">
+                    <strong>New user?</strong> Click "Create New Account" and fill in all required information. You'll need to verify your email address.
+                </p>
+
+                <h4>🔑 Admin Access</h4>
+                <p class="text-muted mb-2">
+                    <strong>Need admin access?</strong> Contact your system administrator to obtain an admin key.
+                </p>
+
+                <h4>📞 Contact Support</h4>
+                <p class="text-muted mb-2">
+                    <strong>Email:</strong> support@cwtp.com<br>
+                    <strong>Phone:</strong> +63 (02) 1234-5678<br>
+                    <strong>Office Hours:</strong> Monday - Friday, 8:00 AM - 5:00 PM
+                </p>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-primary modal-close" style="width: 100%;">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for All Functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ===== FORCE CLEAR ALL INPUTS ON PAGE LOAD =====
+            setTimeout(function() {
+                const allInputs = document.querySelectorAll('input');
+                allInputs.forEach(input => {
+                    input.value = '';
+                    input.setAttribute('value', '');
+                });
+            }, 100);
+
+            // Prevent browser from filling forms
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.setAttribute('autocomplete', 'off');
+            });
+
+            // ===== PASSWORD TOGGLE FUNCTIONALITY =====
+            const passwordToggles = document.querySelectorAll('.password-toggle');
+
+            passwordToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const passwordInput = document.getElementById(targetId);
+                    const eyeIcon = this.querySelector('.eye-icon');
+                    const eyeOffIcon = this.querySelector('.eye-off-icon');
+
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        eyeIcon.style.display = 'none';
+                        eyeOffIcon.style.display = 'block';
+                    } else {
+                        passwordInput.type = 'password';
+                        eyeIcon.style.display = 'block';
+                        eyeOffIcon.style.display = 'none';
+                    }
+                });
+            });
+
+            // ===== TAB SWITCHING =====
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+
+                    if (targetTab === 'user') {
+                        document.getElementById('user-login').classList.remove('hidden');
+                    } else if (targetTab === 'admin') {
+                        document.getElementById('admin-login').classList.remove('hidden');
+                    }
+
+                    // Clear all inputs when switching tabs
+                    setTimeout(function() {
+                        const inputs = document.querySelectorAll('input:not([readonly])');
+                        inputs.forEach(input => {
+                            input.value = '';
+                        });
+                    }, 50);
+                });
+            });
+
+            // ===== MODAL CONTROLS =====
+            const modalTriggers = document.querySelectorAll('[data-modal]');
+            const modalCloses = document.querySelectorAll('.modal-close');
+            const modalOverlays = document.querySelectorAll('.modal-overlay');
+
+            modalTriggers.forEach(trigger => {
+                trigger.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const modalId = this.getAttribute('data-modal');
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.add('active');
+                    }
+                });
+            });
+
+            modalCloses.forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    const modal = this.closest('.modal-overlay');
+                    if (modal) {
+                        modal.classList.remove('active');
+                    }
+                });
+            });
+
+            modalOverlays.forEach(overlay => {
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('active');
+                    }
+                });
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    modalOverlays.forEach(overlay => {
+                        overlay.classList.remove('active');
+                    });
+                }
+            });
+
+            // ===== ADDITIONAL AUTOFILL PREVENTION =====
+            // Clear inputs on focus
+            const inputs = document.querySelectorAll('input:not([readonly])');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    if (this.hasAttribute('data-first-focus')) {
+                        return;
+                    }
+                    this.value = '';
+                    this.setAttribute('data-first-focus', 'true');
+                });
+            });
+
+            // Prevent paste
+            inputs.forEach(input => {
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const text = (e.clipboardData || window.clipboardData).getData('text');
+                    this.value = text;
+                });
+            });
+        });
+
+        // Clear on page show (handles back button)
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                const inputs = document.querySelectorAll('input:not([readonly])');
+                inputs.forEach(input => {
+                    input.value = '';
+                });
+            }
+        });
+    </script>
+
+    <!-- Login Manager Script -->
+    <script src="~/js/login.js"></script>
+</body>
+</html>

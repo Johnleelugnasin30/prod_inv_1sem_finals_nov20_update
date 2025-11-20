@@ -1,0 +1,540 @@
+﻿@page
+@model ProductINV.Pages.UserViewModel
+@{
+    ViewData["Title"] = "User Dashboard - Asset Inventory System";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: linear-gradient(135deg, #8b1a1a 0%, #c44f4f 25%, #d4a851 50%, #2d7a5f 75%, #1a4d7a 100%);
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --text-primary: #1a1a2e;
+            --text-secondary: #6c757d;
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --bg-card: rgba(30, 37, 48, 0.95);
+            --text-primary: #ffffff;
+            --text-secondary: #b0b8c1;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        @@keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .floating-controls {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            gap: 0.75rem;
+            z-index: 9999;
+        }
+
+        .control-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            border: none;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .page-header {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+            .tab-btn.active {
+                background: linear-gradient(135deg, #8b1a1a 0%, #c44f4f 100%);
+                color: white;
+            }
+
+        .content-section {
+            display: none;
+        }
+
+            .content-section.active {
+                display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-control, .form-select {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2d7a5f 0%, #1a4d7a 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(45, 122, 79, 0.4);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: rgba(45, 122, 79, 0.1);
+            color: #2d7a5f;
+            border: 1px solid rgba(45, 122, 79, 0.3);
+        }
+
+        .alert-danger {
+            background: rgba(183, 62, 62, 0.1);
+            color: #B73E3E;
+            border: 1px solid rgba(183, 62, 62, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table th {
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .qr-display {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .qr-display img {
+            max-width: 300px;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Controls -->
+    <div class="floating-controls">
+        <button class="control-btn" id="themeToggle" title="Toggle Theme">
+            <span id="themeIcon">🌙</span>
+        </button>
+        <form method="post" asp-page-handler="Logout" style="display:inline;">
+            <button type="submit" class="control-btn" title="Logout">🚪</button>
+        </form>
+    </div>
+
+    <div class="main-container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1>📦 User Dashboard</h1>
+            <p>Welcome, <strong>@Model.Username</strong></p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="dashboard">🏠 Dashboard</button>
+            <button class="tab-btn" data-tab="products">📋 Product Availability</button>
+            <button class="tab-btn" data-tab="product-info">ℹ️ Product Information</button>
+            <button class="tab-btn" data-tab="qr">📱 QR Generated</button>
+            <button class="tab-btn" data-tab="borrow">📝 Borrow Form</button>
+            <button class="tab-btn" data-tab="profile">👤 Profile Dashboard</button>
+            <button class="tab-btn" data-tab="history">📜 Login History</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <div class="alert alert-success">@Model.SuccessMessage</div>
+        }
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+
+        <!-- DASHBOARD TAB -->
+        <div class="content-section active" id="dashboard">
+            <div class="card">
+                <h2>Dashboard Overview</h2>
+                <p>Welcome to your inventory dashboard. Use the tabs above to navigate.</p>
+                <div class="product-grid mt-3">
+                    <div class="product-card">
+                        <h3>📦 Available Products</h3>
+                        <p style="font-size: 2rem; font-weight: bold;">@(Model.Products?.Count ?? 0)</p>
+                    </div>
+                    <div class="product-card">
+                        <h3>📝 Borrow Requests</h3>
+                        <p style="font-size: 2rem; font-weight: bold;">@(Model.BorrowRequests?.Count ?? 0)</p>
+                    </div>
+                    <div class="product-card">
+                        <h3>📜 Login Sessions</h3>
+                        <p style="font-size: 2rem; font-weight: bold;">@(Model.LoginHistory?.Count ?? 0)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRODUCT AVAILABILITY TAB -->
+        <div class="content-section" id="products">
+            <div class="card">
+                <h2>Product Availability</h2>
+                <div class="product-grid mt-3">
+                @if (Model.Products != null && Model.Products.Any())
+                {
+                        @foreach (var p in Model.Products)
+                    {
+                        <div class="product-card">
+                                <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">📦</div>
+                                <h4>@p.Name</h4>
+                                <p><strong>ID:</strong> @p.ProductId</p>
+                                <p><strong>Category:</strong> @(p.Category ?? "N/A")</p>
+                                <p><strong>Location:</strong> @(p.Location ?? "N/A")</p>
+                                <p><strong>Status:</strong> <span style="color: @(p.IsAvailable ? "#2d7a5f" : "#B73E3E");">@(p.IsAvailable ? "✓ Available" : "✗ In Use")</span></p>
+                                <button class="btn-primary mt-2" onclick="viewProduct('@p.ProductId')" style="width: 100%;">View Details</button>
+                        </div>
+                    }
+                }
+                else
+                {
+                        <p>No products available.</p>
+                }
+                </div>
+            </div>
+        </div>
+
+        <!-- PRODUCT INFORMATION TAB -->
+        <div class="content-section" id="product-info">
+            <div class="card">
+                <h2>Product Information</h2>
+                <form method="get" asp-page-handler="SearchProduct" class="mb-3">
+                    <input type="text" name="searchTerm" class="form-control" placeholder="Search by Product ID or Name..." value="@Model.SearchTerm" />
+                    <button type="submit" class="btn-primary mt-2">Search</button>
+                </form>
+
+                @if (Model.SelectedProduct != null)
+                {
+                    <div class="card">
+                        <h3>@Model.SelectedProduct.Name</h3>
+                        <p><strong>Product ID:</strong> @Model.SelectedProduct.ProductId</p>
+                        <p><strong>Category:</strong> @(Model.SelectedProduct.Category ?? "N/A")</p>
+                        <p><strong>Location:</strong> @(Model.SelectedProduct.Location ?? "N/A")</p>
+                        <p><strong>Status:</strong> @(Model.SelectedProduct.IsAvailable ? "Available" : "In Use")</p>
+                        <p><strong>Description:</strong> @(Model.SelectedProduct.Description ?? "No description available")</p>
+                        @if (Model.SelectedProduct.IsAvailable)
+                        {
+                            <button class="btn-primary mt-2" onclick="showBorrowForm(@Model.SelectedProduct.Id)">Request to Borrow</button>
+                        }
+                    </div>
+                }
+                else if (!string.IsNullOrEmpty(Model.SearchTerm))
+                {
+                    <p>No product found matching your search.</p>
+                }
+            </div>
+        </div>
+
+        <!-- QR GENERATED TAB -->
+        <div class="content-section" id="qr">
+            <div class="card">
+                <h2>QR Code Generator</h2>
+                <form method="get" asp-page-handler="GenerateQR" class="mb-3">
+                    <input type="text" name="productId" class="form-control" placeholder="Enter Product ID..." value="@Model.QRProductId" />
+                    <button type="submit" class="btn-primary mt-2">Generate QR Code</button>
+                </form>
+
+                @if (!string.IsNullOrEmpty(Model.QRCodeUrl))
+                {
+                    <div class="qr-display">
+                        <h3>Item Information QR Code</h3>
+                        <img src="@Model.QRCodeUrl" alt="QR Code" />
+                        <p class="mt-2"><strong>Product ID:</strong> @Model.QRProductId</p>
+                        <p><em>Admin will send you an email if the product is available.</em></p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- BORROW FORM TAB -->
+        <div class="content-section" id="borrow">
+            <div class="card">
+                <h2>Borrow Form</h2>
+                <form method="post" asp-page-handler="BorrowRequest">
+                    <div class="mb-3">
+                        <label class="form-label">Select Product</label>
+                        <select asp-for="NewBorrowRequest.ProductId" class="form-select" required>
+                            <option value="">-- Select Product --</option>
+                            @if (Model.Products != null)
+                            {
+                                @foreach (var p in Model.Products.Where(x => x.IsAvailable))
+                {
+                                    <option value="@p.Id">@p.Name (@p.ProductId)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Purpose</label>
+                        <textarea asp-for="NewBorrowRequest.Purpose" class="form-control" rows="4" placeholder="Describe the purpose for borrowing this item..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Submit Borrow Request</button>
+                </form>
+
+                @if (Model.BorrowRequests != null && Model.BorrowRequests.Any())
+                {
+                    <div class="mt-4">
+                        <h3>My Borrow Requests</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Purpose</th>
+                                    <th>Request Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var req in Model.BorrowRequests)
+                                {
+                                    <tr>
+                                        <td>@req.ProductName</td>
+                                        <td>@req.Purpose</td>
+                                        <td>@req.RequestDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                        <td>
+                                            <span style="padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem;
+                                                background: @(req.Status == "Approved" ? "rgba(45, 122, 79, 0.2)" : req.Status == "Rejected" ? "rgba(183, 62, 62, 0.2)" : "rgba(212, 168, 81, 0.2)");
+                                                color: @(req.Status == "Approved" ? "#2d7a5f" : req.Status == "Rejected" ? "#B73E3E" : "#d4a851");">
+                                                @req.Status
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- PROFILE DASHBOARD TAB -->
+        <div class="content-section" id="profile">
+            <div class="card">
+                <h2>Profile Dashboard</h2>
+                @if (Model.CurrentUser != null)
+                {
+                    <div class="card mt-3">
+                        <h3>Account Information</h3>
+                        <p><strong>Full Name:</strong> @Model.CurrentUser.FullName</p>
+                        <p><strong>Username:</strong> @Model.CurrentUser.Username</p>
+                        <p><strong>Email:</strong> @Model.CurrentUser.Email</p>
+                        <p><strong>ID Number:</strong> @(Model.CurrentUser.IdNumber ?? "N/A")</p>
+                        <p><strong>Position:</strong> @(Model.CurrentUser.Position ?? "N/A")</p>
+                        <p><strong>Role:</strong> @Model.CurrentUser.Role</p>
+                        <p><strong>Email Verified:</strong> @(Model.CurrentUser.IsEmailVerified ? "✓ Yes" : "✗ No")</p>
+                        <p><strong>Account Created:</strong> @Model.CurrentUser.CreatedAt.ToString("yyyy-MM-dd")</p>
+                    </div>
+                }
+            </div>
+                </div>
+
+        <!-- LOGIN HISTORY TAB -->
+        <div class="content-section" id="history">
+            <div class="card">
+                <h2>Login History</h2>
+                @if (Model.LoginHistory != null && Model.LoginHistory.Any())
+                {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Action</th>
+                                <th>IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var log in Model.LoginHistory)
+                            {
+                                <tr>
+                                    <td>@log.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>@log.Action</td>
+                                    <td>@(log.IpAddress ?? "N/A")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No login history available.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const htmlElement = document.documentElement;
+
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        htmlElement.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            themeIcon.textContent = theme === 'dark' ? '🌞' : '🌙';
+        }
+
+        // Tab Switching
+        const tabs = document.querySelectorAll('.tab-btn');
+        const sections = document.querySelectorAll('.content-section');
+
+        tabs.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabs.forEach(x => x.classList.remove('active'));
+                sections.forEach(x => x.classList.remove('active'));
+
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        function viewProduct(productId) {
+            document.querySelector('[data-tab="product-info"]').click();
+            document.querySelector('#product-info input[name="searchTerm"]').value = productId;
+            document.querySelector('#product-info form').submit();
+        }
+
+        function showBorrowForm(productId) {
+            document.querySelector('[data-tab="borrow"]').click();
+            document.querySelector('#borrow select').value = productId;
+        }
+    </script>
+</body>
+</html>

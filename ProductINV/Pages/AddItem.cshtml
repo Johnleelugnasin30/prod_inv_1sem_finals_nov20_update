@@ -1,0 +1,46 @@
+﻿@page
+@model InventoryRazor.Pages.ManageProductModel
+@{
+    ViewData["Title"] = "Manage Products";
+}
+
+
+
+
+
+<!-- 1. Heading at the absolute top (mb-4 adds spacing below) -->
+<h1 class="mb-4"> </h1>
+
+<!-- 2. Navigation buttons immediately below, aligned left (the default alignment) -->
+<div class="mb-4">
+    <div class="btn-group" role="group">
+        <!-- Home Button -->
+        <a asp-page="/Index" class="btn btn-info">🏠 Home</a>
+
+     
+    </div>
+</div>
+
+
+
+
+<!-- Add New Product Form -->
+<form method="post" asp-page-handler="Create" class="mb-4">
+    <div class="mb-2">
+        <label class="form-label">Product Name</label>
+        <input type="text" name="NewProduct.Name" class="form-control" required />
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Price (₱)</label>
+        <input type="number" name="NewProduct.Price" class="form-control" step="0.01" required />
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Quantity</label>
+        <input type="number" name="NewProduct.Quantity" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-success">➕ Add Product</button>
+</form>
+
+
+
+

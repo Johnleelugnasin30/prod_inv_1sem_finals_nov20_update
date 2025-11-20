@@ -1,0 +1,952 @@
+﻿@page
+@model InventoryRazor.Pages.ManageProductModel
+@{
+    ViewData["Title"] = "Manage Products - Asset Inventory System";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Background Decoration */
+        .bg-decoration {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+            animation: float 20s infinite ease-in-out;
+        }
+
+            .bg-circle:nth-child(1) {
+                width: 400px;
+                height: 400px;
+                top: -200px;
+                right: -200px;
+                animation-delay: 0s;
+            }
+
+            .bg-circle:nth-child(2) {
+                width: 300px;
+                height: 300px;
+                bottom: -150px;
+                left: -150px;
+                animation-delay: 7s;
+            }
+
+            .bg-circle:nth-child(3) {
+                width: 200px;
+                height: 200px;
+                top: 40%;
+                left: 10%;
+                animation-delay: 14s;
+            }
+
+        @@keyframes float {
+            0%, 100%
+
+        {
+            transform: translate(0, 0) scale(1);
+        }
+
+        33% {
+            transform: translate(30px, -30px) scale(1.1);
+        }
+
+        66% {
+            transform: translate(-20px, 20px) scale(0.9);
+        }
+
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+
+        .nav-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .nav-text h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            color: #1a1a2e;
+        }
+
+        .nav-text p {
+            font-size: 0.75rem;
+            margin: 0;
+            color: #6c757d;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .btn-nav {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-nav-home {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+            .btn-nav-home:hover {
+                background: rgba(102, 126, 234, 0.2);
+                transform: translateY(-2px);
+            }
+
+        .btn-nav-logout {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+
+            .btn-nav-logout:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            }
+
+        /* Main Content */
+        .main-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem 2rem;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+            .dashboard-title h1 {
+                font-size: 2rem;
+                font-weight: 700;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                margin: 0;
+            }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .status-badge::before {
+                content: '●';
+                font-size: 1.2rem;
+                animation: pulse 2s ease-in-out infinite;
+            }
+
+        @@keyframes pulse {
+            0%, 100%
+
+        {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 30px rgba(102, 126, 234, 0.2);
+            }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+            .stat-icon.primary {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+
+            .stat-icon.success {
+                background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            }
+
+            .stat-icon.warning {
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        /* Table Container */
+        .table-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+            .table-header h2 {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: #1a1a2e;
+                margin: 0;
+            }
+
+        .btn-add {
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .btn-add:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 0 -2rem;
+            padding: 0 2rem;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+            .custom-table thead th {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: #fff;
+                padding: 1rem;
+                text-align: left;
+                font-weight: 600;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+
+                .custom-table thead th:first-child {
+                    border-top-left-radius: 10px;
+                }
+
+                .custom-table thead th:last-child {
+                    border-top-right-radius: 10px;
+                }
+
+            .custom-table tbody tr {
+                transition: all 0.3s ease;
+                background: #fff;
+            }
+
+                .custom-table tbody tr:hover {
+                    background: rgba(102, 126, 234, 0.05);
+                    transform: scale(1.01);
+                }
+
+            .custom-table tbody td {
+                padding: 1rem;
+                border-bottom: 1px solid #e9ecef;
+                color: #333;
+            }
+
+            .custom-table tbody tr:last-child td:first-child {
+                border-bottom-left-radius: 10px;
+            }
+
+            .custom-table tbody tr:last-child td:last-child {
+                border-bottom-right-radius: 10px;
+            }
+
+        /* Action Buttons */
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-edit {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+            .btn-edit:hover {
+                background: rgba(102, 126, 234, 0.2);
+                transform: translateY(-2px);
+            }
+
+        .btn-delete {
+            background: rgba(239, 83, 80, 0.1);
+            color: #ef5350;
+            margin-left: 0.5rem;
+        }
+
+            .btn-delete:hover {
+                background: rgba(239, 83, 80, 0.2);
+                transform: translateY(-2px);
+            }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #adb5bd;
+        }
+
+        /* Modal Styles */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+
+        }
+
+        .modal-content-custom {
+            background: #fff;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @@keyframes slideUp {
+            from
+
+        {
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        }
+
+        .modal-header-custom {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border-radius: 16px 16px 0 0;
+        }
+
+            .modal-header-custom h5 {
+                margin: 0;
+                font-size: 1.25rem;
+                font-weight: 600;
+            }
+
+        .btn-close-custom {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+            .btn-close-custom:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: rotate(90deg);
+            }
+
+        .modal-body-custom {
+            padding: 2rem;
+        }
+
+        .form-group-custom {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label-custom {
+            display: block;
+            font-weight: 500;
+            color: #1a1a2e;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+            .form-control-custom:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            }
+
+        .modal-footer-custom {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .btn-modal {
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-cancel {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+            .btn-cancel:hover {
+                background: #dee2e6;
+            }
+
+        .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+
+            .btn-save:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            }
+
+        /* Responsive Design */
+        @@media (max-width: 992px) {
+            .nav-container
+
+        {
+            padding: 1rem;
+        }
+
+        .main-content {
+            padding: 0 1rem 1rem;
+        }
+
+        .dashboard-header {
+            padding: 1.5rem;
+        }
+
+        .table-container {
+            padding: 1.5rem;
+        }
+
+        .table-responsive {
+            margin: 0 -1.5rem;
+            padding: 0 1.5rem;
+        }
+
+        }
+
+        @@media (max-width: 768px) {
+            .nav-text p
+
+        {
+            display: none;
+        }
+
+        .dashboard-title {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+            .dashboard-title h1 {
+                font-size: 1.5rem;
+            }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .table-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .custom-table {
+            font-size: 0.85rem;
+        }
+
+            .custom-table thead th,
+            .custom-table tbody td {
+                padding: 0.75rem 0.5rem;
+            }
+
+        .btn-action {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        }
+
+        @@media (max-width: 576px) {
+            .nav-actions
+
+        {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .btn-nav {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .modal-content-custom {
+            width: 95%;
+        }
+
+        .modal-header-custom,
+        .modal-body-custom,
+        .modal-footer-custom {
+            padding: 1rem;
+        }
+
+        .table-responsive {
+            margin: 0 -1rem;
+            padding: 0 1rem;
+        }
+
+        .table-container {
+            padding: 1rem;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Decoration -->
+    <div class="bg-decoration">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <a href="#" class="nav-brand">
+                <div class="nav-logo">AI</div>
+                <div class="nav-text">
+                    <h2>Asset Inventory System</h2>
+                    <p>Product Management Dashboard</p>
+                </div>
+            </a>
+            <div class="nav-actions">
+                <a asp-page="/Index" class="btn-nav btn-nav-home">
+                    <span>🏠</span> Home
+                </a>
+                <button class="btn-nav btn-nav-logout" onclick="handleLogout()">
+                    <span>🚪</span> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="dashboard-title">
+                <div>
+                    <h1>Product Inventory</h1>
+                    <p class="text-muted" style="margin-top: 0.5rem; margin-bottom: 0;">Manage your organizational assets efficiently</p>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.ConnectionStatus))
+                {
+                    <span class="status-badge">@Model.ConnectionStatus</span>
+                }
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        @if (Model.Products.Count > 0)
+        {
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon primary">📦</div>
+                    <div class="stat-label">Total Products</div>
+                    <div class="stat-value">@Model.Products.Count</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon success">💰</div>
+                    <div class="stat-label">Total Value</div>
+                    <div class="stat-value">₱@Model.Products.Sum(p => p.Price * p.Quantity).ToString("N2")</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon warning">📊</div>
+                    <div class="stat-label">Total Quantity</div>
+                    <div class="stat-value">@Model.Products.Sum(p => p.Quantity)</div>
+                </div>
+            </div>
+        }
+
+        <!-- Table Container -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2>Product List</h2>
+                <button class="btn-add" onclick="alert('Add Product feature coming soon!')">
+                    <span>➕</span> Add New Product
+                </button>
+            </div>
+
+            @if (Model.Products.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Price (₱)</th>
+                                <th>Quantity</th>
+                                <th>Total Value</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Model.Products)
+                            {
+                                <tr>
+                                    <td><strong>@product.Name</strong></td>
+                                    <td>₱@product.Price.ToString("N2")</td>
+                                    <td>@product.Quantity</td>
+                                    <td><strong>₱@((product.Price * product.Quantity).ToString("N2"))</strong></td>
+                                    <td>
+                                        <a asp-page="./ManageProduct"
+                                           asp-route-EditProductId="@product.Id"
+                                           class="btn-action btn-edit">
+                                            ✏️ Edit
+                                        </a>
+                                        <form method="post"
+                                              asp-page-handler="Delete"
+                                              asp-route-id="@product.Id"
+                                              onsubmit="return confirm('⚠️ Are you sure you want to delete @product.Name?');"
+                                              style="display:inline;">
+                                            <button type="submit" class="btn-action btn-delete">
+                                                🗑️ Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">📦</div>
+                    <h3>No Products Yet</h3>
+                    <p>Start adding products to your inventory to see them here.</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    @if (Model.ShowEditModal && Model.EditProduct != null)
+    {
+        <div class="modal-backdrop">
+            <div class="modal-content-custom">
+                <form method="post" asp-page-handler="Update">
+                    <div class="modal-header-custom">
+                        <h5>Edit Product</h5>
+                        <a asp-page="./ManageProduct" class="btn-close-custom">✕</a>
+                    </div>
+                    <div class="modal-body-custom">
+                        <input type="hidden" asp-for="EditProduct.Id" />
+
+                        <div class="form-group-custom">
+                            <label class="form-label-custom">Product Name</label>
+                            <input asp-for="EditProduct.Name"
+                                   class="form-control-custom"
+                                   placeholder="Enter product name"
+                                   required />
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label class="form-label-custom">Price (₱)</label>
+                            <input asp-for="EditProduct.Price"
+                                   type="number"
+                                   step="0.01"
+                                   class="form-control-custom"
+                                   placeholder="0.00"
+                                   required />
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label class="form-label-custom">Quantity</label>
+                            <input asp-for="EditProduct.Quantity"
+                                   type="number"
+                                   class="form-control-custom"
+                                   placeholder="0"
+                                   required />
+                        </div>
+                    </div>
+                    <div class="modal-footer-custom">
+                        <a asp-page="./ManageProduct" class="btn-modal btn-cancel">Cancel</a>
+                        <button type="submit" class="btn-modal btn-save">💾 Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+
+    <script>
+        // Prevent body scroll when modal is open
+        @if (Model.ShowEditModal)
+        {
+                <text>
+                document.body.style.overflow = 'hidden';
+                </text>
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Add your logout logic here
+                window.location.href = '/Login';
+            }
+        }
+
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Prevent form resubmission on page refresh
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
+</body>
+</html>
