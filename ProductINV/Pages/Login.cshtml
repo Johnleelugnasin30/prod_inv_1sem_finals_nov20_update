@@ -921,11 +921,18 @@
                     </div>
 
                     <form id="user-login-form" method="post" asp-page-handler="UserLogin" autocomplete="off">
+<<<<<<< HEAD
                         @Html.AntiForgeryToken()
                         <div class="form-group">
                             <label class="form-label">Email Address</label>
                             <input type="email"
                                    asp-for="Email"
+=======
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email"
+                                   name="email"
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                                    class="form-control"
                                    placeholder="Enter your email"
                                    autocomplete="new-email"
@@ -939,7 +946,11 @@
                             <label class="form-label">Password</label>
                             <div class="password-input-wrapper">
                                 <input type="password"
+<<<<<<< HEAD
                                        asp-for="Password"
+=======
+                                       name="password"
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                                        id="user-password"
                                        class="form-control"
                                        placeholder="Enter your password"
@@ -997,11 +1008,18 @@
                     </div>
 
                     <form id="admin-login-form" method="post" asp-page-handler="AdminLogin" autocomplete="off">
+<<<<<<< HEAD
                         @Html.AntiForgeryToken()
                         <div class="form-group">
                             <label class="form-label">Username</label>
                             <input type="text"
                                    asp-for="Username"
+=======
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text"
+                                   name="username"
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                                    class="form-control"
                                    placeholder="Enter admin username"
                                    autocomplete="new-username"
@@ -1015,7 +1033,11 @@
                             <label class="form-label">Password</label>
                             <div class="password-input-wrapper">
                                 <input type="password"
+<<<<<<< HEAD
                                        asp-for="Password"
+=======
+                                       name="password"
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                                        id="admin-password"
                                        class="form-control"
                                        placeholder="Enter admin password"
@@ -1041,7 +1063,11 @@
                             <label class="form-label">Admin Key</label>
                             <div class="password-input-wrapper">
                                 <input type="password"
+<<<<<<< HEAD
                                        asp-for="AdminKey"
+=======
+                                       name="adminKey"
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                                        id="admin-key"
                                        class="form-control"
                                        placeholder="Enter admin access key"
@@ -1201,6 +1227,7 @@
                 <p class="text-center text-muted mb-2">
                     Enter the master key to create a new admin access key.
                 </p>
+<<<<<<< HEAD
                 <form id="create-admin-key-form" method="post" asp-page-handler="CreateAdminKey" autocomplete="off">
                     @Html.AntiForgeryToken()
                     <div class="form-group">
@@ -1208,6 +1235,13 @@
                         <input type="password"
                                name="MasterKey"
                                id="masterKey"
+=======
+                <form id="create-admin-key-form" autocomplete="off">
+                    <div class="form-group">
+                        <label class="form-label">Master Key</label>
+                        <input type="password"
+                               name="masterKey"
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                                class="form-control"
                                placeholder="Enter master key"
                                autocomplete="off"
@@ -1217,8 +1251,12 @@
                     <div class="form-group">
                         <label class="form-label">New Admin Key</label>
                         <input type="password"
+<<<<<<< HEAD
                                name="NewAdminKey"
                                id="newAdminKey"
+=======
+                               name="newAdminKey"
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                                class="form-control"
                                placeholder="Create new admin key"
                                autocomplete="off"
@@ -1459,8 +1497,11 @@
             }
         });
     </script>
+<<<<<<< HEAD
 
     <!-- Login Manager Script -->
     <script src="~/js/login.js"></script>
+=======
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
 </body>
 </html>

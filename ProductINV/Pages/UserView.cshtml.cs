@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+<<<<<<< HEAD
 using Microsoft.EntityFrameworkCore;
 using ProductINV.Models;
 using ProductINV.Services;
@@ -7,11 +8,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+=======
+using System;
+using System.Collections.Generic;
+using System.Linq;
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
 
 namespace ProductINV.Pages
 {
     public class UserViewModel : PageModel
     {
+<<<<<<< HEAD
         private readonly AppDbContext _db;
         private readonly EmailService _emailService;
 
@@ -27,10 +34,19 @@ namespace ProductINV.Pages
         // Product Info
         [BindProperty(SupportsGet = true)]
         public string SearchTerm { get; set; } = "";
+=======
+        // Product list
+        public List<Product> Products { get; set; }
+
+        // Product Info
+        [BindProperty(SupportsGet = true)]
+        public string SearchTerm { get; set; }
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
         public Product SelectedProduct { get; set; }
 
         // QR Code
         [BindProperty(SupportsGet = true)]
+<<<<<<< HEAD
         public string QRProductId { get; set; } = "";
         public string QRCodeUrl { get; set; } = "";
 
@@ -82,11 +98,27 @@ namespace ProductINV.Pages
 
             if (!string.IsNullOrEmpty(SearchTerm))
                 await SearchProduct();
+=======
+        public string QRProductId { get; set; }
+        public string QRCodeUrl { get; set; }
+
+        public string Username { get; set; }
+
+        public void OnGet()
+        {
+            Username = "User";
+
+            LoadProducts();
+
+            if (!string.IsNullOrEmpty(SearchTerm))
+                SearchProduct();
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
 
             if (!string.IsNullOrEmpty(QRProductId))
                 GenerateQR();
         }
 
+<<<<<<< HEAD
         public async Task<IActionResult> OnGetSearchProduct(string searchTerm)
         {
             SearchTerm = searchTerm;
@@ -99,10 +131,25 @@ namespace ProductINV.Pages
         {
             QRProductId = productId;
             await LoadProducts();
+=======
+        public IActionResult OnGetSearchProduct(string searchTerm)
+        {
+            SearchTerm = searchTerm;
+            LoadProducts();
+            SearchProduct();
+            return Page();
+        }
+
+        public IActionResult OnGetGenerateQR(string productId)
+        {
+            QRProductId = productId;
+            LoadProducts();
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             GenerateQR();
             return Page();
         }
 
+<<<<<<< HEAD
         public async Task<IActionResult> OnPostBorrowRequest()
         {
             try
@@ -193,16 +240,43 @@ namespace ProductINV.Pages
                     p.ProductId.Contains(SearchTerm) ||
                     p.Name.Contains(SearchTerm) ||
                     (p.Category != null && p.Category.Contains(SearchTerm)));
+=======
+        public IActionResult OnPostLogout()
+        {
+            return RedirectToPage("/Login");
+        }
+
+        private void LoadProducts()
+        {
+            Products = new List<Product>
+            {
+                new Product { ProductId="PROD001", Name="Dell Laptop", Category="Laptop", Location="IT Room", IsAvailable=true },
+                new Product { ProductId="PROD002", Name="HP Printer", Category="Printer", Location="Admin Office", IsAvailable=false },
+                new Product { ProductId="PROD003", Name="Samsung Monitor", Category="Monitor", Location="Conference Room", IsAvailable=true },
+                new Product { ProductId="PROD004", Name="Logitech Mouse", Category="Accessory", Location="Warehouse", IsAvailable=true },
+            };
+        }
+
+        private void SearchProduct()
+        {
+            SelectedProduct = Products.FirstOrDefault(p =>
+                p.ProductId.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ||
+                p.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase));
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
         }
 
         private void GenerateQR()
         {
+<<<<<<< HEAD
             if (!string.IsNullOrEmpty(QRProductId))
         {
+=======
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             QRCodeUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=300x300&data={QRProductId}";
         }
     }
 
+<<<<<<< HEAD
         private async Task LoadLoginHistory()
         {
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == Username);
@@ -279,5 +353,14 @@ namespace ProductINV.Pages
                 System.Diagnostics.Debug.WriteLine($"Failed to send email: {ex.Message}");
             }
         }
+=======
+    public class Product
+    {
+        public string ProductId { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
+        public string Location { get; set; }
+        public bool IsAvailable { get; set; }
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
     }
 }

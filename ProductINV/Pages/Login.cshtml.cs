@@ -5,17 +5,39 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Antiforgery;
+=======
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
 using ProductINV.Models;
    // ✅ REQUIRED for AppDbContext
 using BCryptNet = BCrypt.Net.BCrypt;
 
 // ===============================================
+<<<<<<< HEAD
+=======
+// ADMIN MODEL (kept exactly as you want it)
+// ===============================================
+namespace ProductINV.Models
+{
+    public class Admin
+    {
+        public int Id { get; set; }
+        public string Username { get; set; } = "";
+        public string PasswordHash { get; set; } = "";
+    }
+}
+
+// ===============================================
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
 // LOGIN MODEL
 // ===============================================
 namespace ProductINV.Pages
 {
+<<<<<<< HEAD
     [IgnoreAntiforgeryToken]
+=======
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
     public class LoginModel : PageModel
     {
         private readonly AppDbContext _context;
@@ -44,13 +66,18 @@ namespace ProductINV.Pages
 
         private const string MASTER_ADMIN_KEY = "MASTER2024";
 
+<<<<<<< HEAD
         public async Task<IActionResult> OnGet()
+=======
+        public IActionResult OnGet()
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
         {
             var sessionUsername = HttpContext.Session.GetString("Username");
 
             if (!string.IsNullOrEmpty(sessionUsername))
                 return RedirectBasedOnRole(HttpContext.Session.GetString("UserRole"));
 
+<<<<<<< HEAD
             // Test database connection
             try
             {
@@ -61,6 +88,8 @@ namespace ProductINV.Pages
                 ErrorMessage = $"Database connection error: {ex.GetBaseException().Message}. Please check your database connection.";
             }
 
+=======
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             return Page();
         }
 
@@ -94,6 +123,7 @@ namespace ProductINV.Pages
                 HttpContext.Session.SetString("PendingUserRole", user.Role);
                 HttpContext.Session.SetString("VerificationCode", otp);
 
+<<<<<<< HEAD
                 // Send email (don't fail login if email fails)
                 try
                 {
@@ -113,6 +143,16 @@ namespace ProductINV.Pages
                 System.Diagnostics.Debug.WriteLine($"User Login Error: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return JsonError("Login failed: " + ex.GetBaseException().Message);
+=======
+                // Send email
+                await SendVerificationEmailAsync(user.Email, otp);
+
+                return JsonSuccess("Verification code sent to your email.");
+            }
+            catch (Exception ex)
+            {
+                return JsonError("Login failed: " + ex.Message);
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             }
         }
 
@@ -171,15 +211,23 @@ namespace ProductINV.Pages
                 return new JsonResult(new
                 {
                     success = true,
+<<<<<<< HEAD
                     redirect = "/AdminDashboard"
+=======
+                    redirect = "/ManageProduct"
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                 });
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 // Log full error details
                 System.Diagnostics.Debug.WriteLine($"Admin Login Error: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return JsonError("Admin login failed: " + ex.GetBaseException().Message);
+=======
+                return JsonError("Admin login failed: " + ex.Message);
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             }
         }
 
@@ -193,6 +241,7 @@ namespace ProductINV.Pages
                 var sessionOtp = HttpContext.Session.GetString("VerificationCode");
                 var pendingId = HttpContext.Session.GetInt32("PendingUserId");
 
+<<<<<<< HEAD
                 // Debug logging
                 System.Diagnostics.Debug.WriteLine($"Session OTP: {sessionOtp}");
                 System.Diagnostics.Debug.WriteLine($"Submitted Code: {VerificationCode}");
@@ -216,6 +265,10 @@ namespace ProductINV.Pages
                     System.Diagnostics.Debug.WriteLine($"Code mismatch: Session='{sessionCode}' vs Submitted='{submittedCode}'");
                     return JsonError("Invalid verification code. Please check and try again.");
                 }
+=======
+                if (pendingId == null || sessionOtp != VerificationCode)
+                    return JsonError("Invalid or expired verification code.");
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
 
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == pendingId);
                 if (user == null)
@@ -227,15 +280,22 @@ namespace ProductINV.Pages
 
                 await _context.SaveChangesAsync();
 
+<<<<<<< HEAD
                 // Set session BEFORE removing verification data
                 HttpContext.Session.SetString("Username", user.Username);
                 HttpContext.Session.SetString("UserRole", user.Role);
 
                 // Clean up verification session data
+=======
+                HttpContext.Session.SetString("Username", user.Username);
+                HttpContext.Session.SetString("UserRole", user.Role);
+
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                 HttpContext.Session.Remove("VerificationCode");
                 HttpContext.Session.Remove("PendingUserId");
                 HttpContext.Session.Remove("PendingUserRole");
 
+<<<<<<< HEAD
                 // Debug logging
                 System.Diagnostics.Debug.WriteLine($"Session set - Username: {user.Username}, Role: {user.Role}");
                 
@@ -248,6 +308,13 @@ namespace ProductINV.Pages
                     success = true,
                     message = "Email verified successfully! Redirecting...",
                     redirect = redirectUrl
+=======
+                return new JsonResult(new
+                {
+                    success = true,
+                    message = "Email verified successfully!",
+                    redirect = user.Role == "User" ? "/UserView" : "/ManageProduct"
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                 });
             }
             catch (Exception ex)
@@ -297,6 +364,7 @@ namespace ProductINV.Pages
         }
 
         // =====================================================
+<<<<<<< HEAD
         // CREATE ADMIN KEY
         // =====================================================
         public async Task<IActionResult> OnPostCreateAdminKey()
@@ -377,6 +445,8 @@ namespace ProductINV.Pages
         }
 
         // =====================================================
+=======
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
         // LOGOUT
         // =====================================================
         public IActionResult OnPostLogout()
@@ -396,24 +466,36 @@ namespace ProductINV.Pages
         private JsonResult JsonError(string message)
         {
             ErrorMessage = message;
+<<<<<<< HEAD
             var result = new JsonResult(new { success = false, message });
             result.ContentType = "application/json";
             return result;
+=======
+            return new JsonResult(new { success = false, message });
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
         }
 
         private JsonResult JsonSuccess(string message)
         {
             SuccessMessage = message;
+<<<<<<< HEAD
             var result = new JsonResult(new { success = true, message });
             result.ContentType = "application/json";
             return result;
+=======
+            return new JsonResult(new { success = true, message });
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
         }
 
         private IActionResult RedirectBasedOnRole(string? role)
         {
             return role switch
             {
+<<<<<<< HEAD
                 "Admin" => RedirectToPage("/AdminDashboard"),
+=======
+                "Admin" => RedirectToPage("/ManageProduct"),
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                 "User" => RedirectToPage("/UserView"),
                 _ => RedirectToPage("/Index"),
             };

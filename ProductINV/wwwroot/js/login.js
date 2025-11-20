@@ -71,6 +71,7 @@ class LoginManager {
         if (modal) {
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
+<<<<<<< HEAD
             
             // Re-attach form handlers when modal opens (in case form wasn't in DOM during init)
             this.attachFormHandlers();
@@ -88,6 +89,8 @@ class LoginManager {
                 this.handleCreateAdminKey(new FormData(createAdminKeyForm));
             });
             createAdminKeyForm.setAttribute('data-handler-attached', 'true');
+=======
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
         }
     }
 
@@ -159,8 +162,13 @@ class LoginManager {
 
     // Form Submission Handlers - Now with real backend integration
     async handleUserLogin(formData) {
+<<<<<<< HEAD
         const email = formData.get('Email') || formData.get('email');
         const password = formData.get('Password') || formData.get('password');
+=======
+        const email = formData.get('email');
+        const password = formData.get('password');
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
 
         if (!this.validateEmail(email)) {
             this.showAlert('error', 'Please enter a valid email address');
@@ -174,11 +182,17 @@ class LoginManager {
             const response = await fetch('/Login?handler=UserLogin', {
                 method: 'POST',
                 headers: {
+<<<<<<< HEAD
                     'Content-Type': 'application/x-www-form-urlencoded'
+=======
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': this.getAntiForgeryToken()
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                 },
                 body: new URLSearchParams(formData)
             });
 
+<<<<<<< HEAD
             if (!response.ok) {
                 // Try to get error message from response
                 let errorMessage = `HTTP error! status: ${response.status}`;
@@ -192,6 +206,8 @@ class LoginManager {
                 throw new Error(errorMessage);
             }
 
+=======
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             const data = await response.json();
 
             if (data.success) {
@@ -203,8 +219,12 @@ class LoginManager {
                 this.showAlert('error', data.message || 'Login failed');
             }
         } catch (error) {
+<<<<<<< HEAD
             const errorMsg = error.message || 'Connection error. Please try again.';
             this.showAlert('error', errorMsg);
+=======
+            this.showAlert('error', 'Connection error. Please try again.');
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             console.error('Login error:', error);
         } finally {
             this.setLoading(submitBtn, false);
@@ -212,9 +232,15 @@ class LoginManager {
     }
 
     async handleAdminLogin(formData) {
+<<<<<<< HEAD
         const username = formData.get('Username') || formData.get('username');
         const password = formData.get('Password') || formData.get('password');
         const adminKey = formData.get('AdminKey') || formData.get('adminKey');
+=======
+        const username = formData.get('username');
+        const password = formData.get('password');
+        const adminKey = formData.get('adminKey');
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
 
         if (!username || !password || !adminKey) {
             this.showAlert('error', 'All fields are required');
@@ -228,11 +254,17 @@ class LoginManager {
             const response = await fetch('/Login?handler=AdminLogin', {
                 method: 'POST',
                 headers: {
+<<<<<<< HEAD
                     'Content-Type': 'application/x-www-form-urlencoded'
+=======
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': this.getAntiForgeryToken()
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                 },
                 body: new URLSearchParams(formData)
             });
 
+<<<<<<< HEAD
             if (!response.ok) {
                 // Try to get error message from response
                 let errorMessage = `HTTP error! status: ${response.status}`;
@@ -246,15 +278,23 @@ class LoginManager {
                 throw new Error(errorMessage);
             }
 
+=======
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             const data = await response.json();
 
             if (data.success) {
                 this.showAlert('success', 'Login successful! Redirecting...');
+<<<<<<< HEAD
                 // Redirect immediately or use provided redirect URL
                 const redirectUrl = data.redirect || '/AdminDashboard';
                 setTimeout(() => {
                     window.location.href = redirectUrl;
                 }, 500);
+=======
+                setTimeout(() => {
+                    window.location.href = data.redirect || '/ManageProduct';
+                }, 1000);
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             } else {
                 this.showAlert('error', data.message || 'Admin login failed');
             }
@@ -328,6 +368,7 @@ class LoginManager {
         this.setLoading(submitBtn, true);
 
         try {
+<<<<<<< HEAD
             // Ensure VerificationCode is sent with correct name
             const formDataToSend = new FormData();
             formDataToSend.append('VerificationCode', code.trim());
@@ -353,22 +394,43 @@ class LoginManager {
                 throw new Error(errorMessage);
             }
 
+=======
+            const response = await fetch('/Login?handler=VerifyEmail', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': this.getAntiForgeryToken()
+                },
+                body: new URLSearchParams(formData)
+            });
+
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             const data = await response.json();
 
             if (data.success) {
                 this.showAlert('success', data.message || 'Email verified successfully!');
                 this.closeAllModals();
+<<<<<<< HEAD
                 // Redirect to appropriate dashboard based on user role
                 const redirectUrl = data.redirect || '/UserView';
                 console.log('Redirecting to:', redirectUrl);
                 // Redirect immediately
                 window.location.href = redirectUrl;
+=======
+                setTimeout(() => {
+                    window.location.href = data.redirect || '/Index';
+                }, 1500);
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             } else {
                 this.showAlert('error', data.message || 'Verification failed');
             }
         } catch (error) {
+<<<<<<< HEAD
             const errorMsg = error.message || 'Connection error. Please try again.';
             this.showAlert('error', errorMsg);
+=======
+            this.showAlert('error', 'Connection error. Please try again.');
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             console.error('Email verification error:', error);
         } finally {
             this.setLoading(submitBtn, false);
@@ -451,12 +513,17 @@ class LoginManager {
     }
 
     async handleCreateAdminKey(formData) {
+<<<<<<< HEAD
         console.log('handleCreateAdminKey called', formData);
         
         const masterKey = formData.get('MasterKey') || formData.get('masterKey');
         const newAdminKey = formData.get('NewAdminKey') || formData.get('newAdminKey');
 
         console.log('MasterKey:', masterKey, 'NewAdminKey:', newAdminKey);
+=======
+        const masterKey = formData.get('masterKey');
+        const newAdminKey = formData.get('newAdminKey');
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
 
         if (!masterKey || !newAdminKey) {
             this.showAlert('error', 'Both fields are required');
@@ -464,6 +531,7 @@ class LoginManager {
         }
 
         const submitBtn = document.querySelector('#create-admin-key-form button[type="submit"]');
+<<<<<<< HEAD
         if (submitBtn) {
             this.setLoading(submitBtn, true);
         }
@@ -476,12 +544,18 @@ class LoginManager {
 
             console.log('Sending request to /Login?handler=CreateAdminKey');
 
+=======
+        this.setLoading(submitBtn, true);
+
+        try {
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             const response = await fetch('/Login?handler=CreateAdminKey', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'RequestVerificationToken': this.getAntiForgeryToken()
                 },
+<<<<<<< HEAD
                 body: new URLSearchParams(formDataToSend)
             });
 
@@ -519,10 +593,21 @@ class LoginManager {
                 setTimeout(() => {
                     this.closeAllModals();
                 }, 1500);
+=======
+                body: new URLSearchParams(formData)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.showAlert('success', data.message || 'Admin key created successfully!');
+                this.closeAllModals();
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
             } else {
                 this.showAlert('error', data.message || 'Failed to create admin key');
             }
         } catch (error) {
+<<<<<<< HEAD
             const errorMsg = error.message || 'Connection error. Please try again.';
             this.showAlert('error', errorMsg);
             console.error('Create admin key error:', error);
@@ -530,6 +615,12 @@ class LoginManager {
             if (submitBtn) {
                 this.setLoading(submitBtn, false);
             }
+=======
+            this.showAlert('error', 'Connection error. Please try again.');
+            console.error('Create admin key error:', error);
+        } finally {
+            this.setLoading(submitBtn, false);
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
         }
     }
 
@@ -560,6 +651,7 @@ class LoginManager {
 
     // Helper Methods
     getAntiForgeryToken() {
+<<<<<<< HEAD
         // Try multiple ways to get the anti-forgery token
         let token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
         if (!token) {
@@ -574,6 +666,10 @@ class LoginManager {
             }
         }
         return token || '';
+=======
+        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+        return token ? token.value : '';
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
     }
 
     setLoading(button, isLoading) {
@@ -606,6 +702,7 @@ class LoginManager {
     }
 }
 
+<<<<<<< HEAD
 // Initialize Login Manager
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof LoginManager !== 'undefined') {
@@ -614,6 +711,11 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error('LoginManager class not found! Check if login.js is loaded.');
     }
+=======
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    new LoginManager();
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
 });
 
 // Prevent form resubmission on refresh

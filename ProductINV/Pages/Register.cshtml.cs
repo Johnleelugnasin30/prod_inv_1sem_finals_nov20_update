@@ -21,7 +21,10 @@ namespace ProductINV.Pages
         [BindProperty] public string Password { get; set; } = "";
         [BindProperty] public string? Position { get; set; }
         [BindProperty] public string? IdNumber { get; set; }
+<<<<<<< HEAD
         [BindProperty] public bool TermsAccepted { get; set; }
+=======
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
 
         public string ErrorMessage { get; set; } = "";
         public string SuccessMessage { get; set; } = "";
@@ -53,13 +56,26 @@ namespace ProductINV.Pages
                     return Page();
                 }
 
+<<<<<<< HEAD
                 if (!TermsAccepted)
                 {
                     ErrorMessage = "You must accept the Terms and Conditions to create an account.";
+=======
+                if (await _db.Users.AnyAsync(u => u.Email == Email.Trim()))
+                {
+                    ErrorMessage = "Email already exists.";
+                    return Page();
+                }
+
+                if (await _db.Users.AnyAsync(u => u.Username == Username.Trim()))
+                {
+                    ErrorMessage = "Username already exists.";
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                     return Page();
                 }
 
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(Password.Trim());
+<<<<<<< HEAD
                 string position = Position?.Trim() ?? "";
 
                 // Debug logging
@@ -186,6 +202,33 @@ namespace ProductINV.Pages
             {
                 System.Diagnostics.Debug.WriteLine($"*** EXCEPTION IN REGISTRATION: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"*** STACK TRACE: {ex.StackTrace}");
+=======
+
+                var user = new User
+                {
+                    FullName = FullName.Trim(),
+                    Email = Email.Trim(),
+                    Username = Username.Trim(),
+                    PasswordHash = hashedPassword,
+                    Position = Position?.Trim(),
+                    IdNumber = IdNumber,     // Auto-generated ID
+                    Role = "User",
+                    IsActive = true,
+                    IsEmailVerified = false,
+                    IsIdVerified = false,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+
+                _db.Users.Add(user);
+                await _db.SaveChangesAsync();
+
+                SuccessMessage = "Account created successfully! Redirecting...";
+                return Page();
+            }
+            catch (Exception ex)
+            {
+>>>>>>> 30da2921ccd7506cfc34fa4ebe511e442f353180
                 ErrorMessage = "Registration failed: " + ex.GetBaseException().Message;
                 return Page();
             }
